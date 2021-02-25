@@ -67,7 +67,7 @@ abstract class BaseFragment : Fragment() {
 
         if (grantResults.isEmpty())  {
             if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                showEnableLocationAlertDialog()
+                // showEnableLocationAlertDialog()
             }
         } else if (requestCode == REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
