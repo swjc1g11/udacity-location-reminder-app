@@ -134,7 +134,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
         }
         else {
             // Use BaseFragment method to request forground and background permissions
-            requestForegroundAndBackgroundLocationPermissions()
+            requestForgroundPermissions()
         }
     }
 
@@ -192,7 +192,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
         if (isForegroundPermissionEnabled()) {
             _viewModel.confirmLocation(selectedLatLong as LatLng, selectedPointOfInterest as PointOfInterest)
         } else {
-            showEnableLocationAlertDialog()
+            requestForgroundPermissions()
         }
     }
 

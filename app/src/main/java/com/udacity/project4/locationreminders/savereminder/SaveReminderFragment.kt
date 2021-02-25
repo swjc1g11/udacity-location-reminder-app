@@ -127,7 +127,11 @@ class SaveReminderFragment : BaseFragment() {
                 }
             }
         } else {
-            requestForegroundAndBackgroundLocationPermissions()
+            if (isForegroundPermissionEnabled()) {
+                requestBackgroundPermissions()
+            } else {
+                requestForgroundPermissions()
+            }
         }
     }
 

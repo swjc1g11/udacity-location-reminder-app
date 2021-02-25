@@ -16,7 +16,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
-import com.udacity.project4.authentication.AuthenticationActivity
 
 /**
  * Base Fragment to observe on the common LiveData objects
@@ -30,6 +29,7 @@ abstract class BaseFragment : Fragment() {
     companion object {
         const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 1000
         const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 1001
+        const val REQUEST_BACKGROUND_ONLY_REQUEST_CODE = 1002
     }
 
     override fun onStart() {
@@ -64,7 +64,28 @@ abstract class BaseFragment : Fragment() {
             requestCode: Int,
             permissions: Array<String>,
             grantResults: IntArray) {
-        if (
+
+        if (grantResults.isEmpty())  {
+            if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                showEnableLocationAlertDialog()
+            }
+        } else if (requestCode == REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                    showEnableLocationAlertDialog()
+                }
+            }
+        } else if (requestCode == REQUEST_BACKGROUND_ONLY_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
+                if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                    showEnableLocationAlertDialog()
+                }  else {
+                    Snackbar.make(requireView(), R.string.requires_background_permission, Snackbar.LENGTH_LONG)
+                            .show()
+                }
+            }
+        }
+        /** if (
                 grantResults.isEmpty() ||
                 grantResults[0] == PackageManager.PERMISSION_DENIED)
         {
@@ -83,7 +104,7 @@ abstract class BaseFragment : Fragment() {
                 Snackbar.make(requireView(), R.string.requires_background_permission, Snackbar.LENGTH_LONG)
                         .show()
             }
-        }
+        } **/
     }
 
     @TargetApi(29)
@@ -134,6 +155,22 @@ abstract class BaseFragment : Fragment() {
                 permissionsArray,
                 resultCode
         )
+    }
+
+    protected fun requestForgroundPermissions() {
+        var permissionsArray = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+        requestPermissions(permissionsArray, REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE)
+    }
+
+    @TargetApi(29)
+    protected fun requestBackgroundPermissions() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val permissionsArray = arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+            requestPermissions(
+                    permissionsArray,
+                    REQUEST_BACKGROUND_ONLY_REQUEST_CODE
+            )
+        }
     }
 
     protected fun showEnableLocationAlertDialog() {
