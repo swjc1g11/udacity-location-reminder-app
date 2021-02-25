@@ -69,9 +69,9 @@ class ReminderListFragment : BaseFragment() {
             navigateToAddReminder()
         }
 
-        if (!areForegroundAndBackgroundLocationPermissionsGranted()) {
-            requestForegroundAndBackgroundLocationPermissions()
-        }
+        //if (!areForegroundAndBackgroundLocationPermissionsGranted()) {
+            //requestForegroundAndBackgroundLocationPermissions()
+        //}
     }
 
     override fun onResume() {

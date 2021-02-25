@@ -66,38 +66,54 @@ abstract class BaseFragment : Fragment() {
             grantResults: IntArray) {
         if (
                 grantResults.isEmpty() ||
-                grantResults[0] == PackageManager.PERMISSION_DENIED ||
-                (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
-                        grantResults[1] ==
-                        PackageManager.PERMISSION_DENIED))
+                grantResults[0] == PackageManager.PERMISSION_DENIED)
         {
             // Permission denied.
             // Call show enable location dialogue from BaseFragment
-            showEnableLocationAlertDialog()
+            if (!shouldShowRequestPermissionRationale(permissions[0])) {
+                showEnableLocationAlertDialog()
+            }
+        } else if (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
+                grantResults[1] ==
+                PackageManager.PERMISSION_DENIED) {
+
+            if (!shouldShowRequestPermissionRationale(permissions[1])) {
+                showEnableLocationAlertDialog()
+            } else {
+                Snackbar.make(requireView(), R.string.requires_background_permission, Snackbar.LENGTH_LONG)
+                        .show()
+            }
         }
     }
 
     @TargetApi(29)
     protected fun areForegroundAndBackgroundLocationPermissionsGranted() : Boolean {
 
-        val foregroundLocationApproved = (
-                PackageManager.PERMISSION_GRANTED ==
-                        ContextCompat.checkSelfPermission(requireActivity(),
-                                Manifest.permission.ACCESS_FINE_LOCATION))
+        val foregroundLocationApproved = isForegroundPermissionEnabled()
 
         // If running android 10 or later, it's necessary to request background location permissions, too
         // Otherwise it is safe to assume the app can access background location information
-        val backgroundPermissionApproved =
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                    PackageManager.PERMISSION_GRANTED ==
-                            ContextCompat.checkSelfPermission(
-                                    requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                            )
-                } else {
-                    true
-                }
+        val backgroundPermissionApproved = isBackgroundPermissionEnabled()
         // Return true only if both permissions are approved
         return foregroundLocationApproved && backgroundPermissionApproved
+    }
+
+    protected fun isForegroundPermissionEnabled(): Boolean {
+        return (PackageManager.PERMISSION_GRANTED ==
+                        ContextCompat.checkSelfPermission(requireActivity(),
+                                Manifest.permission.ACCESS_FINE_LOCATION))
+    }
+
+    protected fun isBackgroundPermissionEnabled(): Boolean {
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            return PackageManager.PERMISSION_GRANTED ==
+                    ContextCompat.checkSelfPermission(
+                            requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                    )
+        } else {
+            return true
+        }
     }
 
     @TargetApi(29)

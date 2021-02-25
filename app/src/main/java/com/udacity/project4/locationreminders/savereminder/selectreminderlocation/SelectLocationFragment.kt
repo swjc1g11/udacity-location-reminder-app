@@ -96,7 +96,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (areForegroundAndBackgroundLocationPermissionsGranted()) {
+        if (isForegroundPermissionEnabled()) {
             enableMyLocation()
         }
     }
@@ -106,7 +106,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         // Use base fragment method to check whether foreground and background location permissions are granted
-        if (areForegroundAndBackgroundLocationPermissionsGranted()) {
+        if (isForegroundPermissionEnabled()) {
             myMap.setMyLocationEnabled(true)
             val locationResult = fusedLocationProvider.lastLocation
             locationResult.addOnCompleteListener(requireActivity()) { task ->
@@ -189,7 +189,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
     }
 
     private fun onLocationSelected() {
-        if (areForegroundAndBackgroundLocationPermissionsGranted()) {
+        if (isForegroundPermissionEnabled()) {
             _viewModel.confirmLocation(selectedLatLong as LatLng, selectedPointOfInterest as PointOfInterest)
         } else {
             showEnableLocationAlertDialog()
