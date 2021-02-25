@@ -66,9 +66,6 @@ abstract class BaseFragment : Fragment() {
             grantResults: IntArray) {
 
         if (grantResults.isEmpty())  {
-            if (!shouldShowRequestPermissionRationale(permissions[0])) {
-                // showEnableLocationAlertDialog()
-            }
         } else if (requestCode == REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 if (!shouldShowRequestPermissionRationale(permissions[0])) {
@@ -125,6 +122,7 @@ abstract class BaseFragment : Fragment() {
                                 Manifest.permission.ACCESS_FINE_LOCATION))
     }
 
+    @TargetApi(29)
     protected fun isBackgroundPermissionEnabled(): Boolean {
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -137,7 +135,7 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    @TargetApi(29)
+    /**@TargetApi(29)
     protected fun requestForegroundAndBackgroundLocationPermissions() {
         var permissionsArray = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -155,7 +153,7 @@ abstract class BaseFragment : Fragment() {
                 permissionsArray,
                 resultCode
         )
-    }
+    }**/
 
     protected fun requestForgroundPermissions() {
         var permissionsArray = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)

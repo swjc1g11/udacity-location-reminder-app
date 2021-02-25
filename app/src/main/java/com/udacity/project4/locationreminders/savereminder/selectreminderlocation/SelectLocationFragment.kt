@@ -104,8 +104,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
         }
     }
 
-
-
     @SuppressLint("MissingPermission")
     private fun enableMyLocation() {
         // Use base fragment method to check whether foreground and background location permissions are granted
@@ -193,7 +191,9 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
 
     private fun onLocationSelected() {
         if (isForegroundPermissionEnabled()) {
-            _viewModel.confirmLocation(selectedLatLong as LatLng, selectedPointOfInterest as PointOfInterest)
+           if (selectedLatLong != null && selectedPointOfInterest != null) {
+               _viewModel.confirmLocation(selectedLatLong as LatLng, selectedPointOfInterest as PointOfInterest)
+           }
         } else {
             requestForgroundPermissions()
         }
