@@ -4,11 +4,15 @@ package com.udacity.project4.locationreminders.savereminder.selectreminderlocati
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -17,6 +21,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
+import com.udacity.project4.BuildConfig
 import com.udacity.project4.R
 import com.udacity.project4.base.BaseFragment
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
@@ -26,6 +32,11 @@ import org.koin.android.ext.android.inject
 import java.io.FileNotFoundException
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener, GoogleMap.OnPoiClickListener {
+
+    companion object {
+        const val TAG = "SelectLocationFragment"
+        const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 1001
+    }
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
@@ -97,11 +108,41 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
             permissions: Array<String>,
             grantResults: IntArray) {
 
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (isForegroundPermissionEnabled()) {
             enableMyLocation()
+        } else {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+                // _viewModel.showSnackBar.value = "Access to your location is required.";
+                Snackbar.make(requireView(), "Access to your location is required.", Snackbar.LENGTH_LONG)
+                        .setAction("Enable Location") {
+                            requestForgroundPermissions()
+                        }
+                        .show()
+            } else {
+               Snackbar.make(requireView(), "Locations permissions were denied.", Snackbar.LENGTH_LONG)
+                       .setAction("Change Permissions") {
+                           startActivity(Intent().apply {
+                               action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                               data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
+                               flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                           })
+                       }
+                       .show()
+            }
         }
+    }
+
+    protected fun isForegroundPermissionEnabled(): Boolean {
+        return (PackageManager.PERMISSION_GRANTED ==
+                ContextCompat.checkSelfPermission(requireActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION))
+    }
+
+    protected fun requestForgroundPermissions() {
+        var permissionsArray = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
+        requestPermissions(permissionsArray, REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE)
     }
 
     @SuppressLint("MissingPermission")
@@ -199,7 +240,4 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback, GoogleMap.OnM
         }
     }
 
-    companion object {
-        const val TAG = "SelectLocationFragment"
-    }
 }

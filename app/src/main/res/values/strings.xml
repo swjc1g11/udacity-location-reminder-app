@@ -53,4 +53,10 @@
     <string name="geofence_too_many_pending_intents">You have provided too many PendingIntents to the addGeofences() call.</string>
     <string name="error_adding_geofence">Error Happened, Can\'t Add Geofence</string>
     <string name="requires_background_permission">For the reminders to work, we also require your background location.</string>
+    <string name="permission_rationale_snackbar_text">Enable background location access.</string>
+    <string name="permission_rationale_snackbar_button_text">Enable</string>
+    <string name="background_permissions_denied">Cannot access background location.</string>
+    <string name="change_permissions">Change Permissions</string>
+    <string name="background_location_required_dialogue_title">Background Location Required</string>
+    <string name="background_location_required_dialogue_body">Reminders will not be triggered unless this application can access your location whilst it is not running.\n\nClick the button below to accept the relevant permissions.</string>
 </resources>

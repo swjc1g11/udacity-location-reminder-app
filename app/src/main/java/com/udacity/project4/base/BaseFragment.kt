@@ -26,12 +26,6 @@ abstract class BaseFragment : Fragment() {
      */
     abstract val _viewModel: BaseViewModel
 
-    companion object {
-        const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 1000
-        const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 1001
-        const val REQUEST_BACKGROUND_ONLY_REQUEST_CODE = 1002
-    }
-
     override fun onStart() {
         super.onStart()
 
@@ -60,7 +54,7 @@ abstract class BaseFragment : Fragment() {
         })
     }
 
-    override fun onRequestPermissionsResult(
+    /** override fun onRequestPermissionsResult(
             requestCode: Int,
             permissions: Array<String>,
             grantResults: IntArray) {
@@ -102,9 +96,9 @@ abstract class BaseFragment : Fragment() {
                         .show()
             }
         } **/
-    }
+    }***/
 
-    @TargetApi(29)
+    /**@TargetApi(29)
     protected fun areForegroundAndBackgroundLocationPermissionsGranted() : Boolean {
 
         val foregroundLocationApproved = isForegroundPermissionEnabled()
@@ -114,26 +108,11 @@ abstract class BaseFragment : Fragment() {
         val backgroundPermissionApproved = isBackgroundPermissionEnabled()
         // Return true only if both permissions are approved
         return foregroundLocationApproved && backgroundPermissionApproved
-    }
+    }**/
 
-    protected fun isForegroundPermissionEnabled(): Boolean {
-        return (PackageManager.PERMISSION_GRANTED ==
-                        ContextCompat.checkSelfPermission(requireActivity(),
-                                Manifest.permission.ACCESS_FINE_LOCATION))
-    }
 
-    @TargetApi(29)
-    protected fun isBackgroundPermissionEnabled(): Boolean {
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            return PackageManager.PERMISSION_GRANTED ==
-                    ContextCompat.checkSelfPermission(
-                            requireActivity(), Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                    )
-        } else {
-            return true
-        }
-    }
+
 
     /**@TargetApi(29)
     protected fun requestForegroundAndBackgroundLocationPermissions() {
@@ -155,23 +134,9 @@ abstract class BaseFragment : Fragment() {
         )
     }**/
 
-    protected fun requestForgroundPermissions() {
-        var permissionsArray = arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION)
-        requestPermissions(permissionsArray, REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE)
-    }
 
-    @TargetApi(29)
-    protected fun requestBackgroundPermissions() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            val permissionsArray = arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-            requestPermissions(
-                    permissionsArray,
-                    REQUEST_BACKGROUND_ONLY_REQUEST_CODE
-            )
-        }
-    }
 
-    protected fun showEnableLocationAlertDialog() {
+    /** protected fun showEnableLocationAlertDialog() {
         val builder = AlertDialog.Builder(requireActivity())
         builder
                 .setTitle(R.string.location_required_title)
@@ -189,5 +154,5 @@ abstract class BaseFragment : Fragment() {
                     }
                 }
                 .show()
-    }
+    }**/
 }
